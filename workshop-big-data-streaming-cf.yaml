@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 1Strategy Big Data Streaming Workshop CloudFormation
+Resources:
+  LimitShardSize:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'limit_shard_size'
+      CodeUri: .
+      Description: ''
+      Handler: limit_shard_size.lambda_handler
+      MemorySize: 128
+      Runtime: python3.6
+      Timeout: 30
+  EventRule:
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: "EventRule"
+      EventPattern:
+        source:
+          - "aws.kinesis"
+        detail-type:
+          - "AWS API Call via CloudTrail"
+        detail:
+          eventName:
+            - "CreateStream"
+      State: "ENABLED"
+      Targets:
+        -
+          Arn:
+            Fn::GetAtt:
+              - "LambdaFunction"
+              - "Arn"
+          Id: "TargetFunctionV1"
+  PermissionForEventsToInvokeLambda:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName:
+        Ref: "LimitShardSize"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn:
+        Fn::GetAtt:
+          - "EventRule"
+          - "Arn"
