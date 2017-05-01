@@ -12,6 +12,9 @@ Resources:
       MemorySize: 128
       Runtime: python3.6
       Timeout: 30
+      Policies:
+        -
+          AmazonKinesisFullAccess
   EventRule:
     Type: "AWS::Events::Rule"
     Properties:
@@ -29,7 +32,7 @@ Resources:
         -
           Arn:
             Fn::GetAtt:
-              - "LambdaFunction"
+              - "LimitShardSize"
               - "Arn"
           Id: "TargetFunctionV1"
   PermissionForEventsToInvokeLambda:
