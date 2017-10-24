@@ -1,0 +1,100 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3 Access",
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::1s-streaming-workshop",
+                "arn:aws:s3:::1s-streaming-workshop/*"
+            ]
+        },
+        {
+            "Sid": "Lambda Invocation",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction",
+                "lambda:GetFunctionConfiguration"
+            ],
+            "Resource": "arn:aws:lambda:us-west-2:281782457076:function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%"
+        },
+        {
+            "Sid": "Elasticsearch List/Put",
+            "Effect": "Allow",
+            "Action": [
+                "es:DescribeElasticsearchDomain",
+                "es:DescribeElasticsearchDomains",
+                "es:DescribeElasticsearchDomainConfig",
+                "es:ESHttpPost",
+                "es:ESHttpPut"
+            ],
+            "Resource": [
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/*"
+            ]
+        },
+        {
+            "Sid": "Elasticsearch Get",
+            "Effect": "Allow",
+            "Action": [
+                "es:ESHttpGet"
+            ],
+            "Resource": [
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_all/_settings",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_cluster/stats",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/alex*/_mapping/life-support",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_nodes",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_nodes/stats",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_nodes/*/stats",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/_stats",
+                "arn:aws:es:us-west-2:281782457076:domain/firehose-landing-zone/alex*/_stats"
+            ]
+        },
+        {
+            "Sid": "CloudWatch Logs Put",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:281782457076:log-group:/aws/kinesisfirehose/test-stream-death-star:log-stream:*"
+            ]
+        },
+        {
+            "Sid": "Kinesis Get",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
+            ],
+            "Resource": "arn:aws:kinesis:us-west-2:281782457076:stream/%FIREHOSE_STREAM_NAME%"
+        },
+        {
+            "Sid": "KMS Decryption"
+            "Effect": "Allow",
+            "Action": [
+                "kms:Decrypt"
+            ],
+            "Resource": [
+                "arn:aws:kms:region:accountid:key/%SSE_KEY_ARN%"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "kms:ViaService": "kinesis.%REGION_NAME%.amazonaws.com"
+                },
+                "StringLike": {
+                    "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:%REGION_NAME%:281782457076:stream/%FIREHOSE_STREAM_NAME%"
+                }
+            }
+        }
+    ]
+}

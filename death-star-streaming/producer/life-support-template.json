@@ -1,0 +1,61 @@
+{
+    "template": "*",
+    "settings": {},
+    "mappings": {
+        "life-support": {
+            "properties": {
+                "@id": {
+                    "type": "string"
+                },
+                "@log_group": {
+                    "type": "string"
+                },
+                "@log_stream": {
+                    "type": "string"
+                },
+                "@message": {
+                    "type": "string"
+                },
+                "@owner": {
+                    "type": "string"
+                },
+                "@timestamp": {
+                    "format": "strict_date_optional_time||epoch_millis",
+                    "type": "date"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Temp": {
+                    "type": "string"
+                },
+                "Oxygen": {
+                    "type": "string"
+                },
+                "Humidity": {
+                    "type": "string"
+                },
+                "Pressure": {
+                    "type": "string"
+                },
+                "Radiation": {
+                    "type": "string"
+                },
+                "Gravity": {
+                    "type": "string"
+                },
+                "Humanoids": {
+                    "type": "string"
+                },
+                "Droids": {
+                    "type": "string"
+                },
+                "Timestamp": {
+                    "type": "date",
+                    "format": "epoch_millis"
+                }
+            }
+        }
+    },
+    "aliases": {}
+}
